@@ -7,14 +7,16 @@ import { SearchParams } from '@/lib/types';
 type SearchBarProps = {
   onSearch: (params: SearchParams) => void;
   loading?: boolean;
+  mode?: 'auditor' | 'client';
 };
 
-export function SearchBar({ onSearch, loading }: SearchBarProps) {
+export function SearchBar({ onSearch, loading, mode = 'auditor' }: SearchBarProps) {
   const currentYear = new Date().getFullYear();
   const [clientName, setClientName] = useState('');
   const [email, setEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [referenceId, setReferenceId] = useState('');
+  const [fileName, setFileName] = useState('');
   const [fromYear, setFromYear] = useState('');
   const [toYear, setToYear] = useState('');
   const [lastNYears, setLastNYears] = useState('');
@@ -26,6 +28,7 @@ export function SearchBar({ onSearch, loading }: SearchBarProps) {
       email: email.trim(),
       userName: userName.trim(),
       referenceId: referenceId.trim(),
+      fileName: fileName.trim(),
       fromYear: fromYear ? Number(fromYear) : undefined,
       toYear: toYear ? Number(toYear) : undefined,
       lastNYears: lastNYears ? Number(lastNYears) : undefined,
@@ -37,44 +40,62 @@ export function SearchBar({ onSearch, loading }: SearchBarProps) {
     setEmail('');
     setUserName('');
     setReferenceId('');
+    setFileName('');
     setFromYear('');
     setToYear('');
     setLastNYears('');
     onSearch({});
   }
 
-  const hasValues = clientName || email || userName || referenceId || fromYear || toYear || lastNYears;
+  const hasValues = clientName || email || userName || referenceId || fileName || fromYear || toYear || lastNYears;
+  const isClientMode = mode === 'client';
 
   return (
     <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {!isClientMode && (
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Client Name</label>
+            <input
+              type="text"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              placeholder="Search by client..."
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            />
+          </div>
+        )}
+        {!isClientMode && (
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Email</label>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Search by email…"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            />
+          </div>
+        )}
+        {!isClientMode && (
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">User Name</label>
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Search by name…"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            />
+          </div>
+        )}
         <div>
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Client Name</label>
+          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">File Name</label>
           <input
             type="text"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-            placeholder="Search by client..."
-            className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Email</label>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Search by email…"
-            className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">User Name</label>
-          <input
-            type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            placeholder="Search by name…"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+            placeholder="Search by file name..."
             className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>

@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUpload } from '@/hooks/useUpload';
 import { FileDropzone } from '@/components/FileDropzone';
 import { isValidEmail } from '@/lib/utils';
+import { GOV_DOC_TYPES } from '@/lib/types';
 
 type FormData = {
   clientName: string;
@@ -15,6 +16,7 @@ type FormData = {
   userName: string;
   email: string;
   notes: string;
+  docType: string;
   files: File[];
 };
 
@@ -25,6 +27,7 @@ const INITIAL: FormData = {
   userName: '',
   email: '',
   notes: '',
+  docType: 'Other',
   files: [],
 };
 
@@ -71,6 +74,7 @@ export default function UploadPage() {
         userName: form.userName,
         email: form.email,
         notes: form.notes,
+        docType: form.docType,
         files: form.files,
       },
       user?.displayName ?? 'anonymous'
@@ -90,6 +94,7 @@ export default function UploadPage() {
         userName: user.displayName,
         email: user.email,
         notes: '',
+        docType: 'Other',
         files: [],
       });
     }
@@ -219,6 +224,22 @@ export default function UploadPage() {
               placeholder="Optional description or tags for this upload…"
               className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm resize-none"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Document Type
+            </label>
+            <select
+              value={form.docType}
+              onChange={(e) => setField('docType', e.target.value)}
+              className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-sm"
+            >
+              {GOV_DOC_TYPES.map((doc) => (
+                <option key={doc} value={doc}>
+                  {doc}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

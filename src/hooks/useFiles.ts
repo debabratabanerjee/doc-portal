@@ -28,6 +28,9 @@ export function useFiles() {
       if (params.referenceId) {
         query = query.ilike('reference_id', `%${params.referenceId}%`);
       }
+      if (params.fileName) {
+        query = query.ilike('file_name', `%${params.fileName}%`);
+      }
 
       const currentYear = new Date().getFullYear();
       if (params.lastNYears && params.lastNYears > 0) {
@@ -52,8 +55,9 @@ export function useFiles() {
     }
   }, []);
 
-  const fetchRecent = useCallback(async (limit = 10) => {
-    setLoading(true);
+  const fetchRecent = useCallback(async (limit = 10, options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const { data, error: queryError } = await supabase
@@ -66,7 +70,7 @@ export function useFiles() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Fetch failed');
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 

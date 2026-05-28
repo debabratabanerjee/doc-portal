@@ -49,6 +49,8 @@ export function useUpload() {
             uploaded_by: uploadedBy,
             file_size: file.size,
             file_type: file.type,
+            doc_type: formData.docType || 'Other',
+            request_id: formData.requestId || null,
           });
 
           if (dbError) throw new Error(`Database error: ${dbError.message}`);

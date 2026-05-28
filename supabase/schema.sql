@@ -21,12 +21,15 @@ create table if not exists public.file_uploads (
   notes         text,
   uploaded_by   text not null,
   file_size     bigint,
-  file_type     text
+  file_type     text,
+  doc_type      text default 'Other',
+  request_id    uuid
 );
 
 -- Backward-compatible migration for existing projects
 alter table public.file_uploads add column if not exists client_name text;
 alter table public.file_uploads add column if not exists record_year integer;
+alter table public.file_uploads add column if not exists request_id uuid;
 
 update public.file_uploads
 set
@@ -44,6 +47,26 @@ create index if not exists idx_file_uploads_user_name    on public.file_uploads 
 create index if not exists idx_file_uploads_client_name  on public.file_uploads (client_name);
 create index if not exists idx_file_uploads_record_year  on public.file_uploads (record_year desc);
 create index if not exists idx_file_uploads_uploaded_at  on public.file_uploads (uploaded_at desc);
+create index if not exists idx_file_uploads_doc_type     on public.file_uploads (doc_type);
+
+-- ============================================================
+-- Client upload requests table for persistent request storage
+-- ============================================================
+create table if not exists public.client_upload_requests (
+  id            uuid primary key default gen_random_uuid(),
+  client_name   text not null,
+  title         text not null,
+  details       text,
+  status        text not null default 'open',
+  created_by    text not null,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+create index if not exists idx_client_upload_requests_client_name on public.client_upload_requests (client_name);
+create index if not exists idx_client_upload_requests_status on public.client_upload_requests (status);
+
+alter table public.client_upload_requests disable row level security;
 
 -- ============================================================
 -- Row Level Security (RLS)

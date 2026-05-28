@@ -7,10 +7,16 @@ import { DemoUser } from '@/lib/types';
 
 function mapUser(user: User): DemoUser {
   const fallbackName = user.email?.split('@')[0] ?? 'User';
+  const displayName = user.user_metadata?.full_name || user.user_metadata?.name || fallbackName;
+  const roleFromMetadata = user.user_metadata?.role;
+  const isRamClient = /ram/i.test(displayName) || /ram/i.test(user.email ?? '');
+  const role: DemoUser['role'] = roleFromMetadata === 'client' || isRamClient ? 'client' : 'auditor';
+
   return {
     id: user.id,
-    displayName: user.user_metadata?.full_name || user.user_metadata?.name || fallbackName,
+    displayName,
     email: user.email ?? '',
+    role,
   };
 }
 

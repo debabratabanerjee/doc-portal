@@ -13,6 +13,8 @@ const NAV_ITEMS = [
   { href: '/files', label: 'Files', icon: Search },
 ];
 
+const CLIENT_NAV_ITEMS = [{ href: '/client', label: 'Client', icon: LayoutDashboard }];
+
 type NavbarProps = {
   user: DemoUser;
   onLogout: () => Promise<void>;
@@ -24,6 +26,7 @@ export function Navbar({ user, onLogout, darkMode, onToggleDark }: NavbarProps) 
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navItems = user.role === 'client' ? CLIENT_NAV_ITEMS : NAV_ITEMS;
 
   async function handleLogout() {
     await onLogout();
@@ -42,7 +45,7 @@ export function Navbar({ user, onLogout, darkMode, onToggleDark }: NavbarProps) 
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
+            {navItems.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
@@ -92,7 +95,7 @@ export function Navbar({ user, onLogout, darkMode, onToggleDark }: NavbarProps) 
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="md:hidden pb-3 space-y-1 animate-fade-in">
-            {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
+            {navItems.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}

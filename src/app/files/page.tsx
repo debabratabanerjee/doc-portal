@@ -33,6 +33,7 @@ export default function FilesPage() {
       !params.email &&
       !params.userName &&
       !params.referenceId &&
+      !params.fileName &&
       !params.fromYear &&
       !params.toYear &&
       !params.lastNYears;

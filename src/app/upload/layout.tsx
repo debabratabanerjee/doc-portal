@@ -24,6 +24,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (mounted && !loading && !user) {
       router.replace('/login');
+      return;
+    }
+    if (mounted && !loading && user?.role === 'client') {
+      router.replace('/client');
     }
   }, [mounted, loading, user, router]);
 
